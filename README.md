@@ -1,135 +1,210 @@
-Mottu Track - Spring Boot Application
-Aplicação web desenvolvida com Spring Boot, Thymeleaf, Flyway e Spring Security para simular a operação da Mottu com gestão de Filiais, Pátios, Vagas, Motos e Usuários.
+Mottu Track · Spring Boot + Thymeleaf + Flyway + Security
 
-📋 Descrição
-Sistema completo com autenticação baseada em perfis (ADMIN/USER), CRUDs completos e interface web responsiva utilizando Thymeleaf.
+Aplicação web (challenge JAVA ADVANCED) construída com Spring Boot, Thymeleaf, Flyway e Spring Security.
 
-✨ Funcionalidades
-✅ Thymeleaf - Páginas HTML para listar/criar/editar/excluir registros
+Objetivo: simular a operação da Mottu com Filiais, Pátios, Vagas, Motos e Usuários — com autenticação (ADMIN/USER), CRUDs completos e páginas no padrão visual unificado.
 
-✅ Fragments - Cabeçalho, menu e rodapé reaproveitados
+✅ O que foi implementado (rubrica do desafio)
 
-✅ Flyway - Versionamento de banco de dados com migrations
+Thymeleaf (30 pts)
 
-✅ Spring Security - Autenticação com form login e proteção de rotas
+Páginas para listar, criar, editar e excluir registros (CRUDs).
 
-✅ CRUD Completo - Gestão de Filiais, Pátios, Vagas, Motos e Usuários
+Fragments (cabeçalho, menu, rodapé) para evitar repetição de código.
 
-✅ Validações - Regras de negócio e validações básicas
+Flyway (20 pts)
 
-🏗️ Arquitetura
-text
-src/
-├── controller/     # Rotas (/login, /register, /home, /admin/*)
-├── model/          # Entidades JPA (Usuario, Filial, Patio, Vaga, Moto)
-├── repository/     # Spring Data JPA
-├── security/       # Configuração Spring Security
-└── templates/      # Thymeleaf (layouts e páginas)
+Versionamento do banco em src/main/resources/db/migration.
 
-resources/
-├── db/migration/   # Scripts Flyway (V1..V4)
-└── application.properties
-🚀 Como Executar
-Pré-requisitos
-Java 21+
+Quatro versões mínimas:
 
-Maven (ou usar wrapper)
+V1__create_tables.sql – criação de tabelas
 
-Docker (opcional - recomendado para Postgres)
+V2__seed_data.sql – dados iniciais
 
-1. Subir Banco de Dados (Docker)
-bash
-# Criar e executar container PostgreSQL
+V3__indexes_and_constraints.sql – índices e unicidades
+
+V4__admin_and_user.sql – usuários padrão
+
+Spring Security (30 pts)
+
+Login (formulário) e logout.
+
+Perfis USER e ADMIN com proteção de rotas.
+
+Funcionalidades (20 pts)
+
+CRUDs funcionais (ex.: Filiais e Motos).
+
+Validações básicas (ex.: UF obrigatório para Filial).
+
+📦 Stack
+
+Java 21 • Spring Boot 3
+
+Spring MVC • Spring Data JPA • Spring Security
+
+Thymeleaf (com fragments)
+
+Flyway (migrations)
+
+PostgreSQL
+
+🗂️ Estrutura (resumo)
+src/main/java/...
+  ├─ controller/      # Rotas MVC (/login, /home, /admin, /admin/*)
+  ├─ model/           # Entidades JPA (Usuario, Filial, Patio, Vaga, Moto)
+  ├─ repository/      # Spring Data JPA
+  └─ security/        # Configuração Spring Security
+
+src/main/resources/
+  ├─ templates/       # Thymeleaf (layouts e páginas)
+  │   ├─ fragments/   # header/menu/footer
+  │   ├─ auth/        # login, register
+  │   ├─ home-user.html
+  │   └─ home-admin.html
+  ├─ static/          # CSS/JS/Imagens
+  └─ db/migration/    # Scripts Flyway (V1..V4)
+
+▶️ Como executar (2 passos recomendados)
+1) Subir PostgreSQL via Docker (opção recomendada)
+
+O repositório inclui um docker-compose.yml com Postgres 17 (DB: mottu, user: postgres, senha: postgres).
+
 docker compose up -d
-Configuração do Banco:
 
-Host: localhost
 
-Porta: 5432
+Isso abre o banco em localhost:5432.
 
-Database: mottu
+Caso prefira um Postgres local próprio, veja a seção Variáveis de Ambiente abaixo.
 
-Usuário: postgres
+2) Subir a aplicação
 
-Senha: postgres
+Com Java 21+ instalado:
 
-2. Executar Aplicação
-bash
-# Usando Maven Wrapper
+# usando o Maven Wrapper (preferível)
 ./mvnw spring-boot:run
 
-# Ou com Maven instalado
+# ou, se tiver Maven instalado
 mvn spring-boot:run
+
+
 Acesse: http://localhost:8081
 
-🔐 Autenticação
-Usuários Padrão
-Os seguintes usuários são criados automaticamente:
+🔐 Acesso / Perfis
 
-Perfil	Usuário	Senha
-ADMIN	admin	admin
-USER	user	user
-Registrar Novo Usuário
-Acesse /register para criar nova conta
+Se o V4__admin_and_user.sql já estiver aplicado com usuários padrão, será possível entrar diretamente com os seeds (admin/user).
 
-Para promover para ADMIN, execute no banco:
+Caso contrário (ou para testar do zero), acesse /register e crie um usuário.
+Para promovê-lo a ADMIN, execute no banco:
 
-sql
-UPDATE usuario SET perfil = 'ADMIN' WHERE username = '<seu-usuario>';
-📊 Migrations (Flyway)
-Versão	Descrição
-V1	Criação das tabelas (usuario, filial, patio, vaga, moto)
-V2	Dados iniciais (filiais, pátios, vagas, motos)
-V3	Índices e constraints (uniqueness)
-V4	Usuários padrão (ADMIN/USER)
-🔧 Configuração
-application.properties (Desenvolvimento)
-properties
+update usuario set perfil = 'ADMIN' where username = '<seu-username>';
+
+
+Observação: as senhas salvas via aplicação usam BCrypt (PasswordEncoder), conforme configuração de Security.
+
+⚙️ Configuração (sem segredos no repositório)
+
+src/main/resources/application.properties usa variáveis de ambiente com defaults adequados ao docker-compose:
+
 server.port=8081
 spring.application.name=Mottu Track API
 
-# Datasource
-spring.datasource.url=jdbc:postgresql://localhost:5432/mottu
-spring.datasource.username=postgres
-spring.datasource.password=postgres
+# Datasource (lê variáveis de ambiente; senão usa defaults do compose)
+spring.datasource.url=${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/mottu}
+spring.datasource.username=${SPRING_DATASOURCE_USERNAME:postgres}
+spring.datasource.password=${SPRING_DATASOURCE_PASSWORD:postgres}
+spring.datasource.hikari.maximum-pool-size=5
 
 # JPA / Flyway
 spring.jpa.hibernate.ddl-auto=none
 spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
 spring.flyway.enabled=true
-Variáveis de Ambiente Suportadas
-SPRING_DATASOURCE_URL
+spring.flyway.locations=classpath:db/migration
+spring.flyway.baseline-on-migrate=true
 
-SPRING_DATASOURCE_USERNAME
+# Thymeleaf
+spring.thymeleaf.cache=false
+server.error.whitelabel.enabled=false
 
-SPRING_DATASOURCE_PASSWORD
 
-🌐 Rotas Principais
-Rota	Descrição	Acesso
-/login	Tela de login	Público
-/register	Cadastro de usuário	Público
-/home	Home do usuário	USER
-/admin	Painel administrativo	ADMIN
-/logout	Logout	Autenticado
-📦 Build
-bash
-# Gerar JAR
-./mvnw -DskipTests clean package
+Variáveis de ambiente suportadas (opcional):
+SPRING_DATASOURCE_URL • SPRING_DATASOURCE_USERNAME • SPRING_DATASOURCE_PASSWORD
 
-# Executar JAR
-java -Dserver.port=8081 -jar target/*.jar
-🐛 Troubleshooting
-Reset do Banco (Desenvolvimento)
-sql
+## 🔀 Migrations (Flyway)
+
+**As migrations são aplicadas automaticamente na inicialização:**
+
+
+* V1__create_tables.sql – tabelas e FKs
+
+* V2__seed_data.sql – dados iniciais
+
+* V3__indexes_and_constraints.sql – índices/uniqueness
+
+* V4__admin_and_user.sql – usuários padrão
+
+Reiniciar (ambiente de dev):
+
+```bash
 DROP SCHEMA public CASCADE;
 CREATE SCHEMA public;
-Porta Ocupada
-Altere a porta no docker-compose.yml se 5432 estiver em uso
+```
 
-Erros de Conexão
-Verifique se as variáveis de ambiente estão corretas
+Ao subir novamente, o Flyway reaplica V1..V4.
 
-Confirme se o container PostgreSQL está executando
+## 🌐 Rotas principais
+
+-GET /login – login
+
+-GET /register – cadastro
+
+-POST /logout – sair
+
+-GET /home – home do USER autenticado
+
+-GET /admin – painel do ADMIN (protegido)
+
+
+--CRUDs no painel ADMIN (exemplos):
+
+-Filiais (com UF obrigatório)
+
+-Pátios (relacionados à Filial)
+
+-Vagas (com código e disponibilidade)
+
+-Motos (com cor e Filial)
+
+-Usuários (ativo/perfil)
+
+## 🧯 Troubleshooting rápido
+
+-Porta 5432 ocupada (Postgres):
+
+
+Pare instâncias existentes ou altere a porta no docker-compose.yml (ex.: "5433:5432").
+
+
+-Erro de conexão (Hikari/Flyway):
+
+
+Ajuste as variáveis SPRING_DATASOURCE_* ou garanta que o Postgres do compose está de pé (docker ps).
+
+
+-Checksum mismatch (Flyway):
+
+
+Em dev, limpe o schema (comandos acima).
+
+
+Em cenários reais, utilize flyway repair e crie novas versões (V5, V6…).
+
+## 🎬 Vídeo Demonstrativo
+
+[................................]
+
 
 ## 👨‍💻 Desenvolvedores
 
