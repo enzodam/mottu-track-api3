@@ -1,0 +1,3 @@
+# configs locais
+src/main/resources/application-dev.properties
+*.local.properties
