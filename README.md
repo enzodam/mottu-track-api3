@@ -194,7 +194,7 @@ Ao subir novamente, o Flyway reaplica V1..V4.
 
 ## 🧯 Troubleshooting rápido
 
-**Porta 5432 ocupada (Postgres):
+**Porta 5432 ocupada (Postgres):**
 
 * Pare instâncias existentes ou altere a porta no docker-compose.yml (ex.: "5433:5432").
 
