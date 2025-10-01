@@ -1,205 +1,135 @@
-#Aplicação web (challenge JAVA ADVANCED) com Spring Boot, Thymeleaf, Flyway e Spring Security.
+Mottu Track - Spring Boot Application
+Aplicação web desenvolvida com Spring Boot, Thymeleaf, Flyway e Spring Security para simular a operação da Mottu com gestão de Filiais, Pátios, Vagas, Motos e Usuários.
 
-Mottu Track • Spring Boot + Thymeleaf + Flyway + Security
+📋 Descrição
+Sistema completo com autenticação baseada em perfis (ADMIN/USER), CRUDs completos e interface web responsiva utilizando Thymeleaf.
 
-Propósito: simular a operação da Mottu com Filiais, Pátios, Vagas, Motos e Usuários — com autenticação (ADMIN/USER), CRUDs e páginas padrão.
+✨ Funcionalidades
+✅ Thymeleaf - Páginas HTML para listar/criar/editar/excluir registros
 
-✅ Requisitos atendidos
+✅ Fragments - Cabeçalho, menu e rodapé reaproveitados
 
-Thymeleaf (30 pts)
+✅ Flyway - Versionamento de banco de dados com migrations
 
-Páginas HTML para listar / criar / editar / excluir registros.
+✅ Spring Security - Autenticação com form login e proteção de rotas
 
-Fragments (cabeçalho, menu, rodapé) reaproveitados no layout.
+✅ CRUD Completo - Gestão de Filiais, Pátios, Vagas, Motos e Usuários
 
-Flyway (20 pts)
+✅ Validações - Regras de negócio e validações básicas
 
-Versionamento em db/migration com quatro migrations:
+🏗️ Arquitetura
+text
+src/
+├── controller/     # Rotas (/login, /register, /home, /admin/*)
+├── model/          # Entidades JPA (Usuario, Filial, Patio, Vaga, Moto)
+├── repository/     # Spring Data JPA
+├── security/       # Configuração Spring Security
+└── templates/      # Thymeleaf (layouts e páginas)
 
-V1__create_tables.sql — cria tabelas
-
-V2__seed_data.sql — dados iniciais
-
-V3__indexes_and_constraints.sql — índices/uniqueness
-
-V4__admin_and_user.sql — usuários padrão (seeds)
-
-Spring Security (30 pts)
-
-Form login e logout.
-
-Perfis ADMIN e USER, com proteção de rotas.
-
-Funcionalidades completas (20 pts)
-
-Fluxos CRUD completos (ex.: Filiais e Motos).
-
-Validações básicas (ex.: UF obrigatório para Filial).
-
-🏗️ Arquitetura (resumo)
-
-controller/ — rotas /login, /register, /home, /admin, /admin/*
-
-model/ — entidades JPA: Usuario, Filial, Patio, Vaga, Moto
-
-repository/ — Spring Data JPA
-
-security/ — configuração do Spring Security (form login, perfis e regras)
-
-templates/ — Thymeleaf (layouts e páginas)
-
-db/migration/ — scripts Flyway (V1..V4)
-
-🧰 Pré-requisitos
-
+resources/
+├── db/migration/   # Scripts Flyway (V1..V4)
+└── application.properties
+🚀 Como Executar
+Pré-requisitos
 Java 21+
 
-Maven (ou usar o wrapper ./mvnw)
+Maven (ou usar wrapper)
 
-Docker (opcional, recomendado para subir Postgres rapidamente)
+Docker (opcional - recomendado para Postgres)
 
-▶️ Como rodar (2 passos recomendados para avaliação)
-1) Subir o Postgres via Docker
-
-Crie (ou mantenha) na raiz o arquivo docker-compose.yml:
-
-version: '3.8'
-services:
-  db:
-    image: postgres:17
-    container_name: mottu-db
-    environment:
-      POSTGRES_DB: mottu
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-volumes:
-  pgdata:
-
-
-Suba o banco:
-
+1. Subir Banco de Dados (Docker)
+bash
+# Criar e executar container PostgreSQL
 docker compose up -d
+Configuração do Banco:
 
+Host: localhost
 
-Host: localhost • Porta: 5432 • DB: mottu • User: postgres • Pass: postgres
+Porta: 5432
 
-2) Rodar a aplicação
-# com wrapper
+Database: mottu
+
+Usuário: postgres
+
+Senha: postgres
+
+2. Executar Aplicação
+bash
+# Usando Maven Wrapper
 ./mvnw spring-boot:run
 
-# ou com Maven instalado
+# Ou com Maven instalado
 mvn spring-boot:run
-
-
 Acesse: http://localhost:8081
 
-🔐 Logins / Perfis
+🔐 Autenticação
+Usuários Padrão
+Os seguintes usuários são criados automaticamente:
 
-As senhas dos usuários seed foram criadas no V4__admin_and_user.sql (BCrypt).
-Se preferir criar seu usuário via UI: use /register e depois promova no banco:
+Perfil	Usuário	Senha
+ADMIN	admin	admin
+USER	user	user
+Registrar Novo Usuário
+Acesse /register para criar nova conta
 
-update usuario set perfil = 'ADMIN' where username = '<seu-username>';
+Para promover para ADMIN, execute no banco:
 
-
-Dica: se quiser “zerar” o banco em DEV, rode:
-
-DROP SCHEMA public CASCADE;
-CREATE SCHEMA public;
-
-
-Ao subir de novo, o Flyway reaplica V1..V4.
-
-⚙️ Configuração (sem segredos no repo)
-
-src/main/resources/application.properties (dev/local):
-
+sql
+UPDATE usuario SET perfil = 'ADMIN' WHERE username = '<seu-usuario>';
+📊 Migrations (Flyway)
+Versão	Descrição
+V1	Criação das tabelas (usuario, filial, patio, vaga, moto)
+V2	Dados iniciais (filiais, pátios, vagas, motos)
+V3	Índices e constraints (uniqueness)
+V4	Usuários padrão (ADMIN/USER)
+🔧 Configuração
+application.properties (Desenvolvimento)
+properties
 server.port=8081
 spring.application.name=Mottu Track API
 
-# Datasource (usa env vars se existirem; senão, defaults do Docker)
-spring.datasource.url=${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/mottu}
-spring.datasource.username=${SPRING_DATASOURCE_USERNAME:postgres}
-spring.datasource.password=${SPRING_DATASOURCE_PASSWORD:postgres}
-spring.datasource.hikari.maximum-pool-size=5
+# Datasource
+spring.datasource.url=jdbc:postgresql://localhost:5432/mottu
+spring.datasource.username=postgres
+spring.datasource.password=postgres
 
 # JPA / Flyway
 spring.jpa.hibernate.ddl-auto=none
 spring.jpa.show-sql=true
-spring.jpa.properties.hibernate.format_sql=true
 spring.flyway.enabled=true
-spring.flyway.locations=classpath:db/migration
-spring.flyway.baseline-on-migrate=true
+Variáveis de Ambiente Suportadas
+SPRING_DATASOURCE_URL
 
-# Thymeleaf
-spring.thymeleaf.cache=false
-server.error.whitelabel.enabled=false
+SPRING_DATASOURCE_USERNAME
 
+SPRING_DATASOURCE_PASSWORD
 
-Variáveis de ambiente suportadas:
-SPRING_DATASOURCE_URL • SPRING_DATASOURCE_USERNAME • SPRING_DATASOURCE_PASSWORD
-
-🌐 Rotas principais
-
-GET /login — tela de login
-
-GET /register — cadastro de usuário
-
-POST /logout — sair
-
-GET /home — home do USER
-
-GET /admin — painel do ADMIN (protegido)
-
-CRUDs (exemplos no painel ADMIN):
-
-Filiais — criar/editar/excluir, com UF obrigatório
-
-Pátios, Vagas (com código), Motos (com cor), Usuários (perfil/ativo)
-
-🗂️ Migrations (Flyway)
-
-src/main/resources/db/migration/
-
-V1__create_tables.sql — criação de usuario, filial, patio, vaga, moto (FKs/defaults)
-
-V2__seed_data.sql — dados iniciais (filiais, pátios, vagas, motos)
-
-V3__indexes_and_constraints.sql — índices de FKs e uniqueness (placa, código, username, email)
-
-V4__admin_and_user.sql — insere usuários padrão (ADMIN/USER)
-
-🔒 Security (Spring Security)
-
-Form login (/login) e logout (POST /logout)
-
-Perfis: ADMIN e USER
-
-Acesso: /admin/** → ADMIN • /home → autenticado
-
-Recursos estáticos liberados (/css/**, /js/**, /images/**)
-
-📦 Build standalone (JAR)
-# gerar JAR
+🌐 Rotas Principais
+Rota	Descrição	Acesso
+/login	Tela de login	Público
+/register	Cadastro de usuário	Público
+/home	Home do usuário	USER
+/admin	Painel administrativo	ADMIN
+/logout	Logout	Autenticado
+📦 Build
+bash
+# Gerar JAR
 ./mvnw -DskipTests clean package
 
-# rodar JAR
+# Executar JAR
 java -Dserver.port=8081 -jar target/*.jar
+🐛 Troubleshooting
+Reset do Banco (Desenvolvimento)
+sql
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+Porta Ocupada
+Altere a porta no docker-compose.yml se 5432 estiver em uso
 
-🧯 Troubleshooting
+Erros de Conexão
+Verifique se as variáveis de ambiente estão corretas
 
-Flyway checksum mismatch: em DEV, limpe o schema (comandos acima) e rode de novo.
-
-Porta 5432 ocupada: pare outro Postgres local ou mude a porta no docker-compose.yml.
-
-Erro de conexão: exporte as variáveis SPRING_DATASOURCE_* ou ajuste para o seu Postgres.
-
-🎬 Vídeo Demonstrativo
-
-[................................]
+Confirme se o container PostgreSQL está executando
 
 ## 👨‍💻 Desenvolvedores
 
@@ -208,4 +138,3 @@ Erro de conexão: exporte as variáveis SPRING_DATASOURCE_* ou ajuste para o seu
 | Enzo Dias Alfaia Mendes       | 558438  | [@enzodam](https://github.com/enzodam) |
 | Matheus Henrique Germano Reis | 555861  | [@MatheusReis48](https://github.com/MatheusReis48) |
 | Luan Dantas dos Santos        | 559004  | [@lds2125](https://github.com/lds2125) |
-
