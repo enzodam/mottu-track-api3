@@ -210,7 +210,7 @@ Ao subir novamente, o Flyway reaplica V1..V4.
 
 ## 🎬 Vídeo Demonstrativo
 
-[................................]
+[https://www.youtube.com/watch?v=KYNq12HNyC0]
 
 
 ## 👨‍💻 Desenvolvedores
