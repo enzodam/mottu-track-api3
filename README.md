@@ -1,4 +1,4 @@
-## Mottu Track · Spring Boot + Thymeleaf + Flyway + Security
+## Mottu Track · API
 
 **Aplicação web (challenge JAVA ADVANCED) construída com Spring Boot, Thymeleaf, Flyway e Spring Security.**
 
@@ -6,7 +6,7 @@ Objetivo: simular a operação da Mottu com Filiais, Pátios, Vagas, Motos e Usu
 
 ## ✅ O que foi implementado (rubrica do desafio)
 
-* Thymeleaf (30 pts)
+* Thymeleaf 
 
 * Páginas para listar, criar, editar e excluir registros (CRUDs).
 
