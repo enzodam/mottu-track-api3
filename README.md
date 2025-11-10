@@ -208,9 +208,13 @@ Ao subir novamente, o Flyway reaplica V1..V4.
 
 * Em cenários reais, utilize flyway repair e crie novas versões (V5, V6…).
 
+## Link do Deploy
+
+[https://mottu-track-api4-1.onrender.com/login].
+
 ## 🎬 Vídeo Demonstrativo
 
-[https://www.youtube.com/watch?v=KYNq12HNyC0]
+[https://youtu.be/UbWzTS0KuZo]
 
 
 ## 👨‍💻 Desenvolvedores
